@@ -31,13 +31,13 @@ export function LandingNavbar() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/dashboard"
+            href="/login"
             className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
             Sign In
           </Link>
           <Link
-            href="#"
+            href="/login"
             className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Request Demo

@@ -36,7 +36,7 @@ export function PatientSidebar() {
           Selected Patient
         </p>
         <button className="flex w-full items-center justify-between rounded-lg border border-border bg-secondary px-3 py-2.5">
-          <span className="text-sm font-medium text-foreground">John Doe - Bed 12</span>
+          <span className="text-sm font-medium text-foreground">Rajesh Sharma - Bed 12</span>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>
@@ -44,7 +44,7 @@ export function PatientSidebar() {
       <div className="mb-6 rounded-lg border border-border bg-secondary p-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-bold text-foreground">John Doe</p>
+            <p className="text-sm font-bold text-foreground">Rajesh Sharma</p>
             <p className="text-xs text-muted-foreground">MRN: 12345678 - 64Y Male</p>
           </div>
           <span className="rounded-full bg-destructive/20 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">

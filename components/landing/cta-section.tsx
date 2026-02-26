@@ -15,13 +15,13 @@ export function CtaSection() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="#"
+              href="/login"
               className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Get Started Now
             </Link>
             <Link
-              href="#"
+              href="/login"
               className="rounded-lg border border-primary px-6 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
             >
               Schedule a Technical Demo
