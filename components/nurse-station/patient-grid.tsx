@@ -13,7 +13,7 @@ interface PatientCard {
 const patients: PatientCard[] = [
   {
     bed: "Bed 04",
-    name: "John Doe",
+    name: "Amit Patel",
     diScore: 84,
     scoreColor: "#ef4444",
     vitals: [
@@ -23,7 +23,7 @@ const patients: PatientCard[] = [
   },
   {
     bed: "Bed 12",
-    name: "Jane Smith",
+    name: "Priya Verma",
     diScore: 62,
     scoreColor: "#f59e0b",
     vitals: [
@@ -33,7 +33,7 @@ const patients: PatientCard[] = [
   },
   {
     bed: "Bed 09",
-    name: "Robert Brown",
+    name: "Vikram Desai",
     diScore: 78,
     scoreColor: "#ef4444",
     vitals: [
@@ -43,7 +43,7 @@ const patients: PatientCard[] = [
   },
   {
     bed: "Bed 21",
-    name: "Alice White",
+    name: "Ananya Iyer",
     diScore: 45,
     scoreColor: "#f59e0b",
     vitals: [
@@ -53,7 +53,7 @@ const patients: PatientCard[] = [
   },
   {
     bed: "Bed 03",
-    name: "Sam Wilson",
+    name: "Suresh Nair",
     diScore: 38,
     scoreColor: "#10b981",
     vitals: [

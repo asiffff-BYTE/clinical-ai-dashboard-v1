@@ -41,7 +41,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-6 text-xs text-muted-foreground">
           <span>Unit: MICU-A4</span>
-          <span>User: Dr. Sarah Williams</span>
+          <span>User: Dr. Meena Kulkarni</span>
           <span className="font-mono font-bold text-foreground">14:28:42</span>
         </div>
       </footer>

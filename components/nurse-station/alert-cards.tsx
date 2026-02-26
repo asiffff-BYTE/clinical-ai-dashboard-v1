@@ -14,7 +14,7 @@ interface AlertData {
 
 const alerts: AlertData[] = [
   {
-    patient: "John Doe",
+    patient: "Amit Patel",
     bed: "Bed 04",
     condition: "Respiratory Failure Risk (High)",
     time: "2m ago",
@@ -25,7 +25,7 @@ const alerts: AlertData[] = [
     actions: ["Acknowledge", "Dispatch Team"],
   },
   {
-    patient: "Jane Smith",
+    patient: "Priya Verma",
     bed: "Bed 12",
     condition: "Sepsis Onset Prediction",
     time: "5m ago",
@@ -36,7 +36,7 @@ const alerts: AlertData[] = [
     actions: ["Acknowledge", "Review Labs"],
   },
   {
-    patient: "Robert Brown",
+    patient: "Vikram Desai",
     bed: "Bed 09",
     condition: "Hypotensive Crisis",
     time: "8m ago",
@@ -46,7 +46,7 @@ const alerts: AlertData[] = [
     actions: ["Acknowledge", "Dispatch Team"],
   },
   {
-    patient: "Alice White",
+    patient: "Ananya Iyer",
     bed: "Bed 21",
     condition: "Arrhythmia Detection",
     time: "12m ago",
