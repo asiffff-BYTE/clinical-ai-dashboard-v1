@@ -115,7 +115,7 @@ export default function LoginPage() {
                     Password
                   </label>
                   <Link
-                    href="#"
+                    href="/login"
                     className="text-xs font-medium text-primary hover:text-primary/80"
                   >
                     Forgot password?
@@ -196,6 +196,7 @@ export default function LoginPage() {
             {/* SSO Button */}
             <button
               type="button"
+              onClick={() => router.push("/dashboard")}
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -212,7 +213,7 @@ export default function LoginPage() {
 
             <p className="mt-6 text-center text-xs text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <Link href="#" className="font-medium text-primary hover:text-primary/80">
+              <Link href="/login" className="font-medium text-primary hover:text-primary/80">
                 Request access
               </Link>
             </p>

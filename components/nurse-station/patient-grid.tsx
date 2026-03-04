@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Plus } from "lucide-react"
 
 interface PatientCard {
@@ -64,6 +65,7 @@ const patients: PatientCard[] = [
 ]
 
 export function PatientGrid() {
+  const router = useRouter()
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
@@ -76,10 +78,18 @@ export function PatientGrid() {
           </p>
         </div>
         <div className="flex rounded-lg border" style={{ borderColor: "var(--nurse-border)" }}>
-          <button className="rounded-l-lg px-3 py-1.5 text-xs font-semibold" style={{ backgroundColor: "var(--nurse-muted)", color: "var(--nurse-foreground)" }}>
+          <button
+            onClick={() => router.push("/nurse-station")}
+            className="rounded-l-lg px-3 py-1.5 text-xs font-semibold"
+            style={{ backgroundColor: "var(--nurse-muted)", color: "var(--nurse-foreground)" }}
+          >
             Grid
           </button>
-          <button className="rounded-r-lg px-3 py-1.5 text-xs font-semibold" style={{ color: "var(--nurse-muted-foreground)" }}>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="rounded-r-lg px-3 py-1.5 text-xs font-semibold"
+            style={{ color: "var(--nurse-muted-foreground)" }}
+          >
             List
           </button>
         </div>
@@ -137,6 +147,7 @@ export function PatientGrid() {
             </div>
 
             <button
+              onClick={() => router.push("/dashboard")}
               className="w-full rounded-lg border py-2 text-sm font-semibold transition-colors"
               style={{ borderColor: "var(--nurse-border)", color: "var(--nurse-foreground)" }}
             >
@@ -150,7 +161,12 @@ export function PatientGrid() {
           className="flex flex-col items-center justify-center rounded-xl border border-dashed p-8"
           style={{ borderColor: "var(--nurse-border)" }}
         >
-          <button className="flex h-12 w-12 items-center justify-center rounded-full" style={{ backgroundColor: "var(--nurse-muted)" }}>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="flex h-12 w-12 items-center justify-center rounded-full"
+            style={{ backgroundColor: "var(--nurse-muted)" }}
+            aria-label="Add priority watch"
+          >
             <Plus className="h-6 w-6" style={{ color: "var(--nurse-muted-foreground)" }} />
           </button>
           <p className="mt-3 text-sm font-medium" style={{ color: "var(--nurse-muted-foreground)" }}>

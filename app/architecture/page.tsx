@@ -115,10 +115,13 @@ export default function ArchitecturePage() {
               powered by ensemble learning.
             </p>
           </div>
-          <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
             <Download className="h-4 w-4" />
             Export Tech Specs
-          </button>
+          </Link>
         </div>
 
         {/* Stats */}
@@ -225,7 +228,7 @@ export default function ArchitecturePage() {
                 probability and feature weights.
               </p>
               <Link
-                href="#"
+                href="/dashboard"
                 className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground underline underline-offset-4"
               >
                 Launch Explorer
@@ -315,12 +318,18 @@ export default function ArchitecturePage() {
             </p>
           </div>
           <div className="mt-4 flex gap-3 md:mt-0">
-            <button className="rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10">
+            <Link
+              href="/login"
+              className="rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+            >
               Schedule Technical Demo
-            </button>
-            <button className="rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10">
+            </Link>
+            <Link
+              href="/architecture"
+              className="rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+            >
               Review API Docs
-            </button>
+            </Link>
           </div>
         </div>
       </main>
@@ -333,9 +342,9 @@ export default function ArchitecturePage() {
             <span className="text-sm text-muted-foreground">Clinical AI v2.4.0 Engine</span>
           </div>
           <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <Link href="#" className="hover:text-foreground">Privacy Policy</Link>
-            <Link href="#" className="hover:text-foreground">HIPAA Compliance</Link>
-            <Link href="#" className="hover:text-foreground">Technical Support</Link>
+            <Link href="/architecture" className="hover:text-foreground">Privacy Policy</Link>
+            <Link href="/architecture" className="hover:text-foreground">HIPAA Compliance</Link>
+            <Link href="/architecture" className="hover:text-foreground">Technical Support</Link>
           </div>
           <p className="text-sm text-muted-foreground">
             &copy; 2024 Clinical Analytics Systems, Inc. All rights reserved.

@@ -1,16 +1,18 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Sparkles, Search, User } from "lucide-react"
 
 const navLinks = [
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Patient List", href: "#" },
+  { label: "Patient List", href: "/dashboard" },
   { label: "Architecture", href: "/architecture", active: true },
-  { label: "Settings", href: "#" },
+  { label: "Settings", href: "/architecture" },
 ]
 
 export function ArchNavbar() {
+  const router = useRouter()
   return (
     <header className="border-b border-border bg-card">
       <div className="flex items-center justify-between px-6 py-3">
@@ -46,7 +48,11 @@ export function ArchNavbar() {
               className="w-40 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
-          <button className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+          <button
+            onClick={() => router.push("/login")}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-primary"
+            aria-label="User profile"
+          >
             <User className="h-4 w-4 text-primary-foreground" />
             <span className="sr-only">User profile</span>
           </button>

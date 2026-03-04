@@ -37,7 +37,7 @@ export default function NurseStationPage() {
           </div>
           <div className="flex items-center gap-6 text-xs" style={{ color: "var(--nurse-muted-foreground)" }}>
             <span className="font-mono">System Time: 14:32:05 EST</span>
-            <Link href="#" className="flex items-center gap-1 font-medium hover:underline">
+            <Link href="/architecture" className="flex items-center gap-1 font-medium hover:underline">
               Support Center
             </Link>
           </div>

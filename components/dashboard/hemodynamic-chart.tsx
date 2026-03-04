@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { TrendingUp } from "lucide-react"
 import {
   LineChart,
@@ -10,22 +11,63 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts"
+import { usePatients, parseBloodPressure } from "@/contexts/patient-context"
 
-const data = [
-  { time: "10:00", hr: 95, map: 72 },
-  { time: "10:30", hr: 102, map: 68 },
-  { time: "11:00", hr: 98, map: 75 },
-  { time: "11:30", hr: 108, map: 65 },
-  { time: "12:00", hr: 112, map: 60 },
-  { time: "12:30", hr: 105, map: 68 },
-  { time: "13:00", hr: 118, map: 55 },
-  { time: "13:30", hr: 110, map: 62 },
-  { time: "14:00", hr: 115, map: 58 },
-  { time: "14:30", hr: 108, map: 65 },
-  { time: "15:00", hr: 112, map: 60 },
-]
+/** Simple deterministic pseudo-random for chart variation */
+function seeded(i: number, hr: number, map: number) {
+  return Math.sin(i * 0.5 + hr * 0.1 + map * 0.1) * 0.5 + 0.5
+}
+
+/** Generate time-series data from current vitals (last point = current, earlier points simulated) */
+function generateChartData(
+  heartRate: number,
+  map: number
+): { time: string; hr: number; map: number }[] {
+  const points = 11
+  const data: { time: string; hr: number; map: number }[] = []
+  const now = new Date()
+
+  for (let i = points - 1; i >= 0; i--) {
+    const t = new Date(now.getTime() - i * 30 * 60 * 1000)
+    const timeStr = t.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    const progress = i / (points - 1)
+    const hrVal =
+      i === points - 1
+        ? heartRate
+        : Math.round(heartRate - (1 - progress) * 12 + seeded(i, heartRate, map) * 8)
+    const mapVal =
+      i === points - 1
+        ? map
+        : Math.round(map - (1 - progress) * 6 + seeded(i + 10, heartRate, map) * 6)
+    data.push({
+      time: timeStr,
+      hr: Math.max(60, Math.min(140, hrVal)),
+      map: Math.max(50, Math.min(120, mapVal)),
+    })
+  }
+  return data
+}
 
 export function HemodynamicChart() {
+  const { selectedPatient } = usePatients()
+
+  const hrNum = selectedPatient?.heartRate
+    ? parseInt(selectedPatient.heartRate, 10)
+    : 112
+  const bpParsed = parseBloodPressure(
+    selectedPatient?.bloodPressure || "94/62"
+  )
+  const mapNum = bpParsed?.map ?? 72
+
+  const data = useMemo(
+    () => generateChartData(Number.isNaN(hrNum) ? 112 : hrNum, mapNum),
+    [hrNum, mapNum]
+  )
+
   return (
     <div className="rounded-xl border border-border bg-card p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -33,6 +75,11 @@ export function HemodynamicChart() {
           <TrendingUp className="h-5 w-5 text-primary" />
           <h3 className="text-lg font-bold text-foreground">
             Live Hemodynamic Trends
+            {selectedPatient && (
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                — {selectedPatient.patientName}
+              </span>
+            )}
           </h3>
         </div>
 

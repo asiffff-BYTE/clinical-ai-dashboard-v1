@@ -2,9 +2,21 @@ import Link from "next/link"
 import { Activity, Globe } from "lucide-react"
 
 const footerLinks = {
-  Product: ["Monitoring", "Risk Scoring", "API Docs"],
-  Company: ["About Us", "Careers", "Trust Center"],
-  Legal: ["Privacy Policy", "HIPAA Compliance", "Terms of Use"],
+  Product: [
+    { label: "Monitoring", href: "/dashboard" },
+    { label: "Risk Scoring", href: "/dashboard" },
+    { label: "API Docs", href: "/architecture" },
+  ],
+  Company: [
+    { label: "About Us", href: "/" },
+    { label: "Careers", href: "/" },
+    { label: "Trust Center", href: "/architecture" },
+  ],
+  Legal: [
+    { label: "Privacy Policy", href: "/architecture" },
+    { label: "HIPAA Compliance", href: "/architecture" },
+    { label: "Terms of Use", href: "/architecture" },
+  ],
 }
 
 export function Footer() {
@@ -32,12 +44,12 @@ export function Footer() {
               </h4>
               <ul className="mt-3 space-y-2">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={link.label}>
                     <Link
-                      href="#"
+                      href={link.href}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
-                      {link}
+                      {link.label}
                     </Link>
                   </li>
                 ))}
@@ -51,7 +63,7 @@ export function Footer() {
             &copy; 2024 ClinicalAI Systems Inc. Empowering clinicians through data.
           </p>
           <div className="flex items-center gap-3">
-            <Link href="#" className="text-muted-foreground transition-colors hover:text-foreground">
+            <Link href="/" className="text-muted-foreground transition-colors hover:text-foreground">
               <Globe className="h-5 w-5" />
               <span className="sr-only">Website</span>
             </Link>

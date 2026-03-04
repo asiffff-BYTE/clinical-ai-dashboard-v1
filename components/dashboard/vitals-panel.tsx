@@ -1,43 +1,82 @@
-import { Heart, Wind, Thermometer, Droplets } from "lucide-react"
+"use client"
 
-const vitals = [
-  {
-    label: "Heart Rate",
-    value: "112",
-    unit: "BPM",
-    icon: Heart,
-    iconColor: "text-destructive",
-    bars: ["bg-chart-3", "bg-chart-3", "bg-destructive", "bg-destructive"],
-  },
-  {
-    label: "BP (SYS/DIA)",
-    value: "94/62",
-    unit: "mmHg",
-    icon: Wind,
-    iconColor: "text-primary",
-    bars: ["bg-primary", "bg-primary", "bg-primary", "bg-chart-5"],
-  },
-  {
-    label: "SPO2",
-    value: "91",
-    unit: "%",
-    icon: Droplets,
-    iconColor: "text-chart-2",
-    bars: ["bg-chart-2", "bg-chart-2", "bg-primary", "bg-chart-5"],
-  },
-  {
-    label: "TEMP",
-    value: "38.9",
-    unit: "\u00b0C",
-    icon: Thermometer,
-    iconColor: "text-chart-3",
-    bars: ["bg-chart-3", "bg-chart-3", "bg-chart-3", "bg-chart-3"],
-  },
-]
+import { Heart, Wind, Thermometer, Droplets } from "lucide-react"
+import { usePatients, hasVitalRisk } from "@/contexts/patient-context"
+
+function getVitalColor(
+  label: string,
+  value: string | number,
+  patientRisk: boolean
+): string {
+  if (patientRisk) {
+    if (label === "SPO2") {
+      const o2 = typeof value === "string" ? parseInt(value, 10) : value
+      if (!Number.isNaN(o2) && o2 < 90) return "text-destructive"
+    }
+    if (label === "Heart Rate") {
+      const hr = typeof value === "string" ? parseInt(value, 10) : value
+      if (!Number.isNaN(hr) && hr > 110) return "text-destructive"
+    }
+  }
+  return "text-foreground"
+}
 
 export function VitalsPanel() {
+  const { selectedPatient } = usePatients()
+  const patientRisk = hasVitalRisk(selectedPatient)
+
+  const hr = selectedPatient?.heartRate || "112"
+  const bp = selectedPatient?.bloodPressure || "94/62"
+  const o2 = selectedPatient?.oxygenLevel || "91"
+  const temp = "38.9" // Not in form, keep default
+
+  const vitals = [
+    {
+      label: "Heart Rate",
+      value: hr,
+      unit: "BPM",
+      icon: Heart,
+      iconColor: getVitalColor("Heart Rate", hr, patientRisk),
+      bars: patientRisk && parseInt(hr, 10) > 110
+        ? ["bg-destructive", "bg-destructive", "bg-destructive", "bg-destructive"]
+        : ["bg-chart-3", "bg-chart-3", "bg-destructive", "bg-destructive"],
+    },
+    {
+      label: "BP (SYS/DIA)",
+      value: bp,
+      unit: "mmHg",
+      icon: Wind,
+      iconColor: "text-primary",
+      bars: ["bg-primary", "bg-primary", "bg-primary", "bg-chart-5"],
+    },
+    {
+      label: "SPO2",
+      value: o2,
+      unit: "%",
+      icon: Droplets,
+      iconColor: getVitalColor("SPO2", o2, patientRisk),
+      bars: patientRisk && parseInt(o2, 10) < 90
+        ? ["bg-destructive", "bg-destructive", "bg-destructive", "bg-destructive"]
+        : ["bg-chart-2", "bg-chart-2", "bg-primary", "bg-chart-5"],
+    },
+    {
+      label: "TEMP",
+      value: temp,
+      unit: "\u00b0C",
+      icon: Thermometer,
+      iconColor: "text-chart-3",
+      bars: ["bg-chart-3", "bg-chart-3", "bg-chart-3", "bg-chart-3"],
+    },
+  ]
+
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div>
+      {selectedPatient && (
+        <p className="mb-3 text-sm font-semibold text-muted-foreground">
+          Monitoring: <span className="text-foreground">{selectedPatient.patientName}</span>
+        </p>
+      )}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {vitals.map((vital) => (
         <div
           key={vital.label}
@@ -65,6 +104,7 @@ export function VitalsPanel() {
           </div>
         </div>
       ))}
+      </div>
     </div>
   )
 }

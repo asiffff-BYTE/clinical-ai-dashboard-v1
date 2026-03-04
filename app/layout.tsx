@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { Toaster } from '@/components/ui/toaster'
+import { PatientProvider } from '@/contexts/patient-context'
 import './globals.css'
 
 const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -19,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${_inter.variable} ${_geistMono.variable} font-sans antialiased`}>
-        {children}
+        <PatientProvider>
+          {children}
+        </PatientProvider>
+        <Toaster />
         <Analytics />
       </body>
     </html>

@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import {
   AlertTriangle,
   X,
@@ -9,6 +10,7 @@ import {
   Syringe,
   CircleDot,
 } from "lucide-react"
+import { usePatients, hasVitalRisk } from "@/contexts/patient-context"
 
 const suggestions = [
   {
@@ -41,38 +43,84 @@ const suggestions = [
   },
 ]
 
+function computeRiskScore(patient: { oxygenLevel?: string; heartRate?: string } | null): number {
+  if (!patient) return 84
+  const o2 = parseInt(patient.oxygenLevel || "", 10)
+  const hr = parseInt(patient.heartRate || "", 10)
+  let score = 50
+  if (!Number.isNaN(o2)) {
+    if (o2 < 90) score += 35
+    else if (o2 < 95) score += 15
+  }
+  if (!Number.isNaN(hr)) {
+    if (hr > 110) score += 30
+    else if (hr > 100) score += 15
+  }
+  return Math.min(99, score)
+}
+
 export function RiskPanel() {
+  const router = useRouter()
+  const { selectedPatient } = usePatients()
+  const patientRisk = hasVitalRisk(selectedPatient)
+  const riskScore = computeRiskScore(selectedPatient)
+
+  const riskMessage = patientRisk
+    ? (() => {
+        const o2 = parseInt(selectedPatient?.oxygenLevel || "", 10)
+        const hr = parseInt(selectedPatient?.heartRate || "", 10)
+        const parts: string[] = []
+        if (!Number.isNaN(o2) && o2 < 90) parts.push(`Low SpO2 (${o2}%)`)
+        if (!Number.isNaN(hr) && hr > 110) parts.push(`Elevated HR (${hr} BPM)`)
+        return parts.join(" • ")
+      })()
+    : null
+
   return (
     <aside className="w-full space-y-4 lg:w-80">
-      {/* Critical Alert */}
-      <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4">
-        <div className="mb-2 flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-destructive" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-destructive">
-                Critical Alert: Sepsis Risk
-              </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                Bed 12 showing rapid vital deterioration. AI suggests immediate lactate review.
-              </p>
+      {/* Critical / Risk Alert - show when O2<90 or HR>110 */}
+      {(patientRisk || riskScore >= 70) && (
+        <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4">
+          <div className="mb-2 flex items-start justify-between">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-destructive">
+                  {patientRisk ? "Critical Alert: Vital Risk" : "AI Risk Analysis"}
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {patientRisk && riskMessage
+                    ? `${selectedPatient?.patientName || "Patient"} — ${riskMessage}`
+                    : `${selectedPatient?.patientName || "Bed 12"} showing rapid vital deterioration. AI suggests immediate lactate review.`}
+                </p>
+              </div>
             </div>
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="text-muted-foreground hover:text-foreground"
+              aria-label="Dismiss alert"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Dismiss alert</span>
+            </button>
           </div>
-          <button className="text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Dismiss alert</span>
-          </button>
+          <p className="mb-3 text-sm font-semibold text-foreground">AI Risk Analysis</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push("/nurse-station")}
+              className="rounded-lg bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground"
+            >
+              Acknowledge
+            </button>
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="rounded-lg bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground"
+            >
+              Go to Vitals
+            </button>
+          </div>
         </div>
-        <p className="mb-3 text-sm font-semibold text-foreground">AI Risk Analysis</p>
-        <div className="flex gap-2">
-          <button className="rounded-lg bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground">
-            Acknowledge
-          </button>
-          <button className="rounded-lg bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground">
-            Go to Vitals
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Risk Score */}
       <div className="flex flex-col items-center rounded-xl border border-border bg-card p-6">
@@ -91,14 +139,16 @@ export function RiskPanel() {
               cy="60"
               r="52"
               fill="none"
-              stroke="#ef4444"
+              stroke={patientRisk ? "#ef4444" : riskScore >= 70 ? "#ef4444" : "#64748b"}
               strokeWidth="8"
-              strokeDasharray={`${(84 / 100) * 327} 327`}
+              strokeDasharray={`${(riskScore / 100) * 327} 327`}
               strokeLinecap="round"
             />
           </svg>
           <div className="absolute flex flex-col items-center">
-            <span className="text-4xl font-extrabold text-destructive">84</span>
+            <span className={`text-4xl font-extrabold ${patientRisk ? "text-destructive" : "text-foreground"}`}>
+              {riskScore}
+            </span>
             <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
               Risk Score
             </span>
@@ -110,10 +160,13 @@ export function RiskPanel() {
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="mb-2 flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-chart-3" />
-          <p className="text-sm font-bold text-foreground">High Deterioration Risk</p>
+          <p className="text-sm font-bold text-foreground">
+            {patientRisk ? "High Deterioration Risk" : "Deterioration Risk"}
+          </p>
         </div>
         <p className="text-xs text-muted-foreground">
-          Probability of septic shock within 4 hours: <span className="font-bold text-foreground">78%</span>
+          Probability of septic shock within 4 hours:{" "}
+          <span className="font-bold text-foreground">{patientRisk ? "78" : Math.min(78, riskScore + 20)}%</span>
         </p>
         <div className="mt-3 flex gap-2">
           {[
@@ -124,7 +177,9 @@ export function RiskPanel() {
             <div
               key={status.label}
               className={`flex flex-1 flex-col items-center rounded-lg border border-border p-2 ${
-                status.label === "Critical" ? "border-destructive/50 bg-destructive/10" : "bg-secondary"
+                status.label === "Critical" && patientRisk
+                  ? "border-destructive/50 bg-destructive/10"
+                  : "bg-secondary"
               }`}
             >
               <span className="text-xs font-semibold uppercase text-foreground">

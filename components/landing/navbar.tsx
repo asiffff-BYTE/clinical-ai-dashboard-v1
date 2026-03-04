@@ -15,16 +15,16 @@ export function LandingNavbar() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/dashboard" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Platform
           </Link>
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Clinical Evidence
+          <Link href="/architecture" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Architecture
           </Link>
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Integrations
+          <Link href="/nurse-station" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Nurse Station
           </Link>
-          <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/architecture" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Compliance
           </Link>
         </nav>

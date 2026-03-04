@@ -1,6 +1,9 @@
 "use client"
 
-import { ChevronDown, Sparkles } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { ChevronDown, Sparkles, UserPlus } from "lucide-react"
+import { usePatients, hasVitalRisk } from "@/contexts/patient-context"
 
 const bedOccupancy = [
   { bed: "01", status: "empty" },
@@ -29,29 +32,61 @@ function getBedColor(status: string) {
 }
 
 export function PatientSidebar() {
+  const router = useRouter()
+  const { patients, selectedPatient, selectedPatientId, setSelectedPatient } =
+    usePatients()
+  const patientRisk = hasVitalRisk(selectedPatient)
+
   return (
     <aside className="w-full border-r border-border bg-card p-4 lg:w-64">
+      <Link
+        href="/patient-entry"
+        className="mb-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+      >
+        <UserPlus className="h-4 w-4" />
+        Add Patient
+      </Link>
       <div className="mb-4">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Selected Patient
         </p>
-        <button className="flex w-full items-center justify-between rounded-lg border border-border bg-secondary px-3 py-2.5">
-          <span className="text-sm font-medium text-foreground">Rajesh Sharma - Bed 12</span>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-        </button>
+        <select
+          value={selectedPatientId ?? ""}
+          onChange={(e) => setSelectedPatient(e.target.value || null)}
+          className="flex w-full items-center justify-between rounded-lg border border-border bg-secondary px-3 py-2.5 text-sm font-medium text-foreground"
+        >
+          {patients.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.patientName} — {p.roomNumber}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="mb-6 rounded-lg border border-border bg-secondary p-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-bold text-foreground">Rajesh Sharma</p>
-            <p className="text-xs text-muted-foreground">MRN: 12345678 - 64Y Male</p>
+      {selectedPatient && (
+        <div className="mb-6 rounded-lg border border-border bg-secondary p-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-bold text-foreground">
+                {selectedPatient.patientName}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                MRN: {selectedPatient.patientId} — {selectedPatient.age}Y{" "}
+                {selectedPatient.gender}
+              </p>
+            </div>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
+                patientRisk
+                  ? "bg-destructive/20 text-destructive"
+                  : "bg-chart-2/20 text-chart-2"
+              }`}
+            >
+              {patientRisk ? "Critical" : "Stable"}
+            </span>
           </div>
-          <span className="rounded-full bg-destructive/20 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">
-            Critical
-          </span>
         </div>
-      </div>
+      )}
 
       <div className="mb-4">
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

@@ -4,6 +4,7 @@ import { VitalsPanel } from "@/components/dashboard/vitals-panel"
 import { HemodynamicChart } from "@/components/dashboard/hemodynamic-chart"
 import { LabResults } from "@/components/dashboard/lab-results"
 import { RiskPanel } from "@/components/dashboard/risk-panel"
+import { RiskAlertBanner } from "@/components/dashboard/risk-alert-banner"
 
 export const metadata = {
   title: "ICU Dashboard - ClinicalAI",
@@ -17,6 +18,9 @@ export default function DashboardPage() {
       <div className="flex flex-1 flex-col lg:flex-row">
         <PatientSidebar />
         <main className="flex-1 overflow-auto p-4 lg:p-6">
+          <div className="mb-4">
+            <RiskAlertBanner />
+          </div>
           <div className="flex flex-col gap-4 xl:flex-row">
             <div className="flex-1 space-y-4">
               <VitalsPanel />

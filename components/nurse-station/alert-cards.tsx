@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Clock } from "lucide-react"
 
 interface AlertData {
@@ -58,6 +59,7 @@ const alerts: AlertData[] = [
 ]
 
 export function AlertCards() {
+  const router = useRouter()
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
@@ -69,7 +71,10 @@ export function AlertCards() {
             4 Critical
           </span>
         </div>
-        <button className="ml-auto flex items-center gap-1.5 text-sm font-medium text-primary">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="ml-auto flex items-center gap-1.5 text-sm font-medium text-primary"
+        >
           <Clock className="h-4 w-4" />
           History
         </button>
@@ -124,6 +129,7 @@ export function AlertCards() {
               {alert.actions.map((action, i) => (
                 <button
                   key={action}
+                  onClick={() => router.push("/dashboard")}
                   className={`rounded-lg px-4 py-2 text-sm font-semibold ${
                     i === 0
                       ? "bg-primary text-primary-foreground"
