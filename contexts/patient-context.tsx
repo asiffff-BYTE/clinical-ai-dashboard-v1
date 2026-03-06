@@ -4,9 +4,12 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react"
+
+export type RiskLevel = "normal" | "warning" | "critical"
 
 export interface Patient {
   id: string
@@ -70,6 +73,32 @@ export function PatientProvider({ children }: { children: React.ReactNode }) {
     return patient
   }, [])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPatients((prev) =>
+        prev.map((p) => {
+          const hr = parseInt(p.heartRate, 10)
+          const o2 = parseInt(p.oxygenLevel, 10)
+          const bp = p.bloodPressure.trim().match(/^(\d+)\s*\/\s*(\d+)$/)
+          const sys = bp ? parseInt(bp[1], 10) : 94
+          const dia = bp ? parseInt(bp[2], 10) : 62
+          const delta = () => (Math.random() - 0.5) * 2
+          const newHr = Math.max(60, Math.min(180, (Number.isNaN(hr) ? 80 : hr) + Math.round(delta())))
+          const newO2 = Math.max(80, Math.min(100, (Number.isNaN(o2) ? 95 : o2) + Math.round(delta() * 0.5)))
+          const newSys = Math.max(70, Math.min(180, sys + Math.round(delta())))
+          const newDia = Math.max(40, Math.min(120, dia + Math.round(delta() * 0.5)))
+          return {
+            ...p,
+            heartRate: String(newHr),
+            oxygenLevel: String(newO2),
+            bloodPressure: `${newSys}/${newDia}`,
+          }
+        })
+      )
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
   const selectedPatient = useMemo(
     () => patients.find((p) => p.id === selectedPatientId) ?? patients[0] ?? null,
     [patients, selectedPatientId]
@@ -109,12 +138,21 @@ export function parseBloodPressure(bp: string): { sys: number; dia: number; map:
   return { sys, dia, map }
 }
 
-/** Returns true if patient has risk: O2 < 90 or HR > 110 */
-export function hasVitalRisk(patient: Patient | null): boolean {
-  if (!patient) return false
+/** Classify risk level: SpO2 >95=Normal, 90-95=Warning, <90=Critical; HR >140=Critical, >120=Warning */
+export function getRiskLevel(patient: Patient | null): RiskLevel {
+  if (!patient) return "normal"
   const o2 = parseInt(patient.oxygenLevel, 10)
   const hr = parseInt(patient.heartRate, 10)
-  if (!Number.isNaN(o2) && o2 < 90) return true
-  if (!Number.isNaN(hr) && hr > 110) return true
-  return false
+  const o2Critical = !Number.isNaN(o2) && o2 < 90
+  const o2Warning = !Number.isNaN(o2) && o2 >= 90 && o2 <= 95
+  const hrCritical = !Number.isNaN(hr) && hr > 140
+  const hrWarning = !Number.isNaN(hr) && hr > 120 && hr <= 140
+  if (o2Critical || hrCritical) return "critical"
+  if (o2Warning || hrWarning) return "warning"
+  return "normal"
+}
+
+/** Returns true when vitals reach Critical (SpO2 < 90 or HR > 140) */
+export function hasVitalRisk(patient: Patient | null): boolean {
+  return getRiskLevel(patient) === "critical"
 }

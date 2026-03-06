@@ -70,7 +70,7 @@ export function NurseNavbar() {
               <span className="sr-only">Notifications</span>
             </button>
             <button
-              onClick={() => router.push("/architecture")}
+              onClick={() => router.push("/settings")}
               className="rounded-lg p-2 transition-colors"
               style={{ color: "var(--nurse-muted-foreground)" }}
               aria-label="Settings"

@@ -11,6 +11,7 @@ import {
   CircleDot,
 } from "lucide-react"
 import { usePatients, hasVitalRisk } from "@/contexts/patient-context"
+import { useSettings } from "@/contexts/settings-context"
 
 const suggestions = [
   {
@@ -50,11 +51,11 @@ function computeRiskScore(patient: { oxygenLevel?: string; heartRate?: string } 
   let score = 50
   if (!Number.isNaN(o2)) {
     if (o2 < 90) score += 35
-    else if (o2 < 95) score += 15
+    else if (o2 <= 95) score += 15
   }
   if (!Number.isNaN(hr)) {
-    if (hr > 110) score += 30
-    else if (hr > 100) score += 15
+    if (hr > 140) score += 30
+    else if (hr > 120) score += 15
   }
   return Math.min(99, score)
 }
@@ -62,6 +63,7 @@ function computeRiskScore(patient: { oxygenLevel?: string; heartRate?: string } 
 export function RiskPanel() {
   const router = useRouter()
   const { selectedPatient } = usePatients()
+  const { alertsEnabled } = useSettings()
   const patientRisk = hasVitalRisk(selectedPatient)
   const riskScore = computeRiskScore(selectedPatient)
 
@@ -71,15 +73,15 @@ export function RiskPanel() {
         const hr = parseInt(selectedPatient?.heartRate || "", 10)
         const parts: string[] = []
         if (!Number.isNaN(o2) && o2 < 90) parts.push(`Low SpO2 (${o2}%)`)
-        if (!Number.isNaN(hr) && hr > 110) parts.push(`Elevated HR (${hr} BPM)`)
+        if (!Number.isNaN(hr) && hr > 140) parts.push(`Elevated HR (${hr} BPM)`)
         return parts.join(" • ")
       })()
     : null
 
   return (
     <aside className="w-full space-y-4 lg:w-80">
-      {/* Critical / Risk Alert - show when O2<90 or HR>110 */}
-      {(patientRisk || riskScore >= 70) && (
+      {/* Critical / Risk Alert - show when O2<90 or HR>140 (respects alerts toggle) */}
+      {alertsEnabled && (patientRisk || riskScore >= 70) && (
         <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4">
           <div className="mb-2 flex items-start justify-between">
             <div className="flex items-center gap-2">

@@ -64,7 +64,7 @@ export function DashboardNavbar() {
               <span className="sr-only">Notifications</span>
             </button>
             <button
-              onClick={() => router.push("/architecture")}
+              onClick={() => router.push("/settings")}
               className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="Settings"
             >
